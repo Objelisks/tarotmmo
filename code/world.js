@@ -1,10 +1,12 @@
-import * as THREE from '/lib/three/three.module.js';
+import {THREE} from './libs.js';
+import actor from './actor.js';
 
 const width = 640;
 const height = 420;
 let scene = new THREE.Scene();
 let camera = new THREE.PerspectiveCamera(75, width/height, 0.1, 1000);
 let renderer = new THREE.WebGLRenderer();
+let player;
 
 const init = () => {
   console.log('init');
@@ -31,14 +33,18 @@ const build = () => {
   camera.position.y = 5;
   camera.position.z = 5;
   camera.lookAt(cube.position);
+
+  player = new actor();
+  player.addTo(scene);
+  console.log(player);
 };
 
 const render = () => {
+  player.update();
   renderer.render(scene, camera);
 };
 
 export default {
-  scene, camera, renderer,
   init,
   build,
   render
