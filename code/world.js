@@ -34,8 +34,7 @@ const build = () => {
   camera.position.z = 5;
   camera.lookAt(cube.position);
 
-  player = new actor();
-  player.addTo(scene);
+  player = new actor(scene);
   console.log(player);
 };
 

@@ -1,0 +1,2 @@
+input => move events
+model(move event) => update position

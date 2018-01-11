@@ -1,12 +1,12 @@
 import thing from './thing.js';
 import input from './input.js';
-import obj from './obj.js';
 
 class actor extends thing {
-  constructor() {
+  constructor(scene) {
     super();
     return this
-      .with(input);
+      .with(input)
+      .when('mesh', (mesh) => scene.add(mesh));
   }
 }
 
