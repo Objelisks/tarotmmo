@@ -35,10 +35,10 @@ class thing {
     return this;
   }
 
-  update() {
+  update(context) {
     this.mods
       .filter(mod => !!mod.update)
-      .forEach(mod => mod.update());
+      .forEach(mod => mod.update(context));
     return this;
   }
 }

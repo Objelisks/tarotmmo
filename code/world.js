@@ -1,5 +1,6 @@
 import {THREE} from './libs.js';
 import actor from './actor.js';
+import devices from './devices.js';
 
 const width = 640;
 const height = 420;
@@ -9,13 +10,11 @@ let renderer = new THREE.WebGLRenderer();
 let player;
 
 const init = () => {
-  console.log('init');
   renderer.setSize(width, height);
   document.body.appendChild(renderer.domElement);
 };
 
 const build = () => {
-  console.log('build');
   const geometry = new THREE.BoxGeometry(1, 1, 1);
   const material = new THREE.MeshLambertMaterial({color: 0xC3E3AC});
   const cube = new THREE.Mesh(geometry, material);
@@ -35,11 +34,15 @@ const build = () => {
   camera.lookAt(cube.position);
 
   player = new actor(scene);
-  console.log(player);
 };
 
 const render = () => {
-  player.update();
+  const context = {
+    camera: camera,
+    scene: scene,
+  };
+  devices.update();
+  player.update(context);
   renderer.render(scene, camera);
 };
 
