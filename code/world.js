@@ -4,8 +4,9 @@ import devices from './devices.js';
 
 const width = 640;
 const height = 420;
+const aspectRatio = width/height;
 let scene = new THREE.Scene();
-let camera = new THREE.PerspectiveCamera(75, width/height, 0.1, 1000);
+let camera = new THREE.OrthographicCamera(-25*aspectRatio, 25*aspectRatio, 25, -25, 0.1, 100);
 let renderer = new THREE.WebGLRenderer();
 let player;
 
@@ -28,9 +29,9 @@ const build = () => {
   const ambient = new THREE.AmbientLight(0x95C4D6, 0.2);
   scene.add(ambient);
 
-  camera.position.x = 5;
-  camera.position.y = 5;
-  camera.position.z = 5;
+  camera.position.x = 25;
+  camera.position.y = 25;
+  camera.position.z = 25;
   camera.lookAt(cube.position);
 
   player = new actor(scene);

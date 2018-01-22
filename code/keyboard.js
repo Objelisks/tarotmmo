@@ -23,9 +23,8 @@ window.addEventListener('keyup', (e) => {
 });
 
 keyboard.update = function() {
-  return keys.reduce((p,c) => Object.assign(p, {[c]: state[c] ? 1.0 : 0.0}), {});
-  //return state.map(key,value => value ? 1.0 : 0.0);
-  //return keys.map(key => state[key] ? 1.0 : 0.0);
+  return keys.reduce((p,c) =>
+      Object.assign(p, {[c]: state[c] ? 1.0 : 0.0}), {});
 };
 
 export default keyboard;
