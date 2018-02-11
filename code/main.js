@@ -1,8 +1,7 @@
 import {THREE} from './libs.js';
-import world from './world.js';
+import {World} from './world.js';
 
-world.init();
-world.build();
+const world = new World();
 
 const play = () => {
   requestAnimationFrame(play);

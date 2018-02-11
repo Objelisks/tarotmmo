@@ -2,7 +2,7 @@ import {THREE} from './libs.js';
 
 const vec = new THREE.Vector3();
 
-class model {
+class Model {
   constructor(thing) {
     this.thing = thing;
 
@@ -23,4 +23,4 @@ class model {
   }
 }
 
-export default model;
+export {Model};

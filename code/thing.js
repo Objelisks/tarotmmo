@@ -1,46 +1,24 @@
-import model from './model.js';
+import {Events} from './events.js';
 
-class thing {
+class Thing {
   constructor() {
-    this.mods = [];
-    this.listens = {};
-    this.queued = {};
+    this.components = [];
     return this
-      .with(model);
+      .with(Events);
   }
 
-  with(mod) {
-    const m = new mod(this);
-    this.mods.push(m);
-    return this;
-  }
-
-  when(type, callback) {
-    const list = this.listens[type];
-    if(!list && this.queued[type]) {
-      this.queued[type].forEach((data) => callback(data));
-      delete this.queued[type];
-    }
-    this.listens[type] = (list || []).concat([callback]);
-    return this;
-  }
-
-  send(type, data) {
-    const list = this.listens[type];
-    if(list) {
-      list.forEach((listen) => listen(data));
-    } else {
-      this.queued[type] = (this.listens[type] || []).concat([data]);
-    }
+  with(component) {
+    const m = new component(this);
+    this.components.push(m);
     return this;
   }
 
   update(context) {
-    this.mods
-      .filter(mod => !!mod.update)
-      .forEach(mod => mod.update(context));
+    this.components
+      .filter(component => !!component.update)
+      .forEach(component => component.update(context));
     return this;
   }
 }
 
-export default thing;
+export {Thing};
