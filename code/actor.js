@@ -3,13 +3,15 @@ import {Model} from './model.js';
 import {Input} from './input.js';
 
 class Actor extends Thing {
-  constructor(world) {
+  constructor(world, modelName) {
     super();
-    world.when('update', (context) => this.update(context));
-    return this
-      .with(Model)
-      .with(Input)
+    const model = new Model(modelName)
       .when('mesh', (mesh) => world.scene.add(mesh));
+    const input = new Input()
+      .when('move', (...args) => model.move(...args));
+    world.when('update', (context) => this.update(context));
+
+    return this.with(model, input);
   }
 }
 

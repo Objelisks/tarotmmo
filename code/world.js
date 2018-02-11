@@ -15,7 +15,7 @@ class World extends Thing {
     //let camera = new THREE.OrthographicCamera(-25*aspectRatio, 25*aspectRatio, 25, -25, 0.1, 100);
     this.camera = new THREE.PerspectiveCamera(30, aspectRatio, 1, 1000);
     this.renderer = new THREE.WebGLRenderer();
-    this.player = new Actor(this);
+    this.player = new Actor(this, 'sphere');
 
     const geometry = new THREE.BoxGeometry(1, 1, 1);
     const material = new THREE.MeshLambertMaterial({color: 0xC3E3AC});
@@ -41,7 +41,7 @@ class World extends Thing {
 
   render() {
     devices.update();
-    this.send('update', this);
+    this.emit('update', this);
     this.renderer.render(this.scene, this.camera);
   }
 }

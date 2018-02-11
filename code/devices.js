@@ -1,5 +1,5 @@
-import keyboard from './devices/keyboard.js';
-import gamepad from './devices/gamepad.js';
+import {keyboard} from './devices/keyboard.js';
+import {gamepad} from './devices/gamepad.js';
 
 const data = {};
 const methods = [keyboard, gamepad];
@@ -15,7 +15,7 @@ class Devices {
       .map(x => isNaN(x) ? -1 : x);
     const maxSignalIndex = signals
       .reduce((p,c,i) => Math.max(...signals) == c ? i : p, -1);
-      
+
     keys.forEach(key => {
       data[key] = clamp(delta[maxSignalIndex][key]);
     });

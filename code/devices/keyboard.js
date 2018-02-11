@@ -27,4 +27,4 @@ keyboard.update = function() {
       Object.assign(p, {[c]: state[c] ? 1.0 : 0.0}), {});
 };
 
-export default keyboard;
+export {keyboard};

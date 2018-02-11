@@ -4,4 +4,4 @@ gamepad.update = function() {
   return {};
 };
 
-export default gamepad;
+export {gamepad};

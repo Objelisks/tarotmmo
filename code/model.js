@@ -1,17 +1,15 @@
 import {THREE} from './libs.js';
+import {Thing} from './thing.js';
 
 const vec = new THREE.Vector3();
 
-class Model {
-  constructor(thing) {
-    this.thing = thing;
-
+class Model extends Thing {
+  constructor(modelName) {
+    super();
     const geo = new THREE.SphereGeometry(1);
     const mat = new THREE.MeshLambertMaterial({color: 0xC3E3AC});
     this.mesh = new THREE.Mesh(geo, mat);
-    this.thing.send('mesh', this.mesh);
-
-    this.thing.when('move', (e) => this.move(e));
+    this.emit('mesh', this.mesh);
   }
 
   move(xOrVec, y, z) {
