@@ -14,7 +14,6 @@ class Input extends Thing {
     const move = new THREE.Vector3(delta.left - delta.right, 0, delta.up - delta.down);
     move.applyQuaternion(CAMERA_ROTATION);
     move.normalize();
-    move.multiplyScalar(1.0);
     this.emit('move', move);
   }
 }

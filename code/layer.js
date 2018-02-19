@@ -1,3 +1,5 @@
+import {THREE} from './libs.js';
+
 class Layer {
   constructor() {
     this.gon = new THREE.Path();

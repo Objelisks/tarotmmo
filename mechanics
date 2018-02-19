@@ -1,3 +1,23 @@
+
+multiple variations on simple actions to create depth
+
+dreams:
+  sit -> rest / meditate / dream
+  alternate map
+  generalized: lots of planes accessible from lots of places
+
+bots:
+  wanderers programmed to take joy in simple pleasures
+  all npcs are unique
+  based on mythological creates
+  fancy custom shaders / artwork for each one
+  can be walking around in a forest and see your friend jezebel
+  provide api for writing bots
+  the game world should go on whether anyone's playing it or not
+  simplify normally complex interfaces to encourage bot interactions:
+    emoji communication vs full text parsing
+    nav map api provided
+
 player interactions:
 communicate needs by placing symbols
 
@@ -32,9 +52,6 @@ layers:
 grass, dust, water, clouds, magic
 deformation, permanence, wind, color
 
-cloud computing:
-a pun
-
 maps:
 hand drawn?
 generated, but you need to explore to create them?
@@ -43,16 +60,13 @@ the world is proc gen
 XXXX don't like maps.
   ui would be too non-diagetic
   would need a lot of infrastructure to allow trading/sharing maps
+  encourage metamaps
 
 personal space:
 should be accessible from anywhere anytime
 build and collect things to place inside
 shape walls
 personalized
+created from nothing, and not taken/claimed from the existing world
 
 living in spaces over time
-
-bots:
-  wanderers programmed to take joy in simple pleasures
-  all npcs are unique
-  can be walking around in a forest and see your friend jezebel
