@@ -18,7 +18,7 @@ class Model extends Thing {
       this.emit('loaded', this.mesh);
     } else {
       loader.load(`./data/${modelName}`, (geo, mats) => {
-        this.mesh = new THREE.Mesh(geo, mats[0]);
+        this.mesh = new THREE.Mesh(geo, mats);
         this.obj.add(this.mesh);
         this.emit('loaded', this.mesh);
       });
