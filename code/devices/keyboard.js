@@ -1,6 +1,6 @@
 const keyboard = {};
 const keys = ['left','right','up','down','a','b'];
-const state = keys.reduce((p,c) => Object.assign(p, {[c]: false}), {});
+const state = keys.reduce((p,c) => Object.assign(p, {[c]: 0.0}), {});
 const keyboardMap = {
   'ArrowLeft': 'left',
   'ArrowRight': 'right',
@@ -12,19 +12,23 @@ const keyboardMap = {
 
 window.addEventListener('keydown', (e) => {
   if(keyboardMap[e.key]) {
-    state[keyboardMap[e.key]] = true;
+    state[keyboardMap[e.key]] = 1.0;
   }
 });
 
 window.addEventListener('keyup', (e) => {
   if(keyboardMap[e.key]) {
-    state[keyboardMap[e.key]] = false;
+    state[keyboardMap[e.key]] = 0.0;
   }
 });
 
 keyboard.update = function() {
-  return keys.reduce((p,c) =>
-      Object.assign(p, {[c]: state[c] ? 1.0 : 0.0}), {});
+  return {
+    'horizontal': state['left'] - state['right'],
+    'vertical': state['up'] - state['down'],
+    'a': state['a'],
+    'b': state['b'],
+  };
 };
 
 export {keyboard};

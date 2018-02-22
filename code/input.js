@@ -11,9 +11,8 @@ class Input extends Thing {
   update(context) {
     const delta = devices.delta();
     const camera = context.camera;
-    const move = new THREE.Vector3(delta.left - delta.right, 0, delta.up - delta.down);
+    const move = new THREE.Vector3(delta.horizontal, 0, delta.vertical);
     move.applyQuaternion(CAMERA_ROTATION);
-    move.normalize();
     this.emit('move', move);
   }
 }
