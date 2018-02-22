@@ -24,19 +24,7 @@ class World extends Thing {
 
     this.flowers = [];
     for(let i=0; i<30; i++) {
-      let flower = new Actor(this, 'flowers/fragrant_water_lily_leaf.json');
-      flower.model.move(new THREE.Vector3(Math.random()*20-10, 0, Math.random()*20-10));
-      flower.model.rotate(new THREE.Quaternion().setFromAxisAngle(THREE.Object3D.DefaultUp, Math.random()*2*Math.PI));
-      this.flowers.push(flower);
-    }
-    for(let i=0; i<15; i++) {
-      let flower = new Actor(this, 'flowers/fragrant_water_lily_flower.json');
-      flower.model.move(new THREE.Vector3(Math.random()*20-10, 0, Math.random()*20-10));
-      flower.model.rotate(new THREE.Quaternion().setFromAxisAngle(THREE.Object3D.DefaultUp, Math.random()*2*Math.PI));
-      this.flowers.push(flower);
-    }
-    for(let i=0; i<10; i++) {
-      let flower = new Actor(this, 'flowers/largeflower_fairybell_plant.json');
+      let flower = new Actor(this, 'flowers/fremonts_death_camas.json');
       flower.model.move(new THREE.Vector3(Math.random()*20-10, 0, Math.random()*20-10));
       flower.model.rotate(new THREE.Quaternion().setFromAxisAngle(THREE.Object3D.DefaultUp, Math.random()*2*Math.PI));
       this.flowers.push(flower);
