@@ -16,7 +16,6 @@ class Devices {
       .map(x => isNaN(x) ? -1 : x);
     const maxSignalIndex = filtered
       .reduce((p,c,i) => Math.max(...filtered) == c ? i : p, -2);
-    console.log(delta, signals, filtered, maxSignalIndex);
 
     keys.forEach(key => {
       data[key] = clamp(delta[maxSignalIndex][key]);

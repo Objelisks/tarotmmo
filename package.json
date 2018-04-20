@@ -2,10 +2,15 @@
   "name": "tarotmmo",
   "version": "1.0.0",
   "description": "tarot mmo",
-  "main": "code/main.js",
+  "main": "server.js",
+  "dependencies": {
+    "express": "^4.16.2",
+    "polybooljs": "^1.2.0"
+  },
+  "devDependencies": {},
   "scripts": {
-    "start": "node server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
@@ -16,8 +21,5 @@
   "bugs": {
     "url": "https://github.com/Objelisks/tarotmmo/issues"
   },
-  "homepage": "https://github.com/Objelisks/tarotmmo#readme",
-  "dependencies": {
-    "express": "^4.16.2",
-  }
+  "homepage": "https://github.com/Objelisks/tarotmmo#readme"
 }

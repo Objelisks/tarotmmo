@@ -1,9 +1,10 @@
 import {THREE} from './libs.js';
 import {Actor} from './actor.js';
+import {devices} from './singletons.js';
 import {LocalPlayer} from './localplayer.js';
+import {Painter} from './painter.js';
 import {Terrain} from './terrain.js';
 import {Thing} from './thing.js';
-import {devices} from './singletons.js';
 
 const width = 1024;
 const height = 768;
@@ -21,14 +22,26 @@ class World extends Thing {
     });
     this.player = new LocalPlayer(this);
     this.terrain = new Terrain(this);
+    this.painter = new Painter(this);
 
+    const filenames = [
+      'fragrant_water_lily_flower.json',
+      'fragrant_water_lily_leaf.json',
+      'fremonts_death_camas.json',
+      'glacier_fawn_lily.json',
+      'largeflower_fairybell_plant.json',
+      'washington_lily.json',
+      'narrow_leaf_soap_plant.json',
+    ];
     this.flowers = [];
-    for(let i=0; i<30; i++) {
-      let flower = new Actor(this, 'flowers/fremonts_death_camas.json');
-      flower.model.move(new THREE.Vector3(Math.random()*20-10, 0, Math.random()*20-10));
-      flower.model.rotate(new THREE.Quaternion().setFromAxisAngle(THREE.Object3D.DefaultUp, Math.random()*2*Math.PI));
-      this.flowers.push(flower);
-    }
+    filenames.forEach((filename) => {
+      for(let i=0; i<10; i++) {
+        let flower = new Actor(this, `flowers/${filename}`);
+        flower.model.move(new THREE.Vector3(Math.random()*20-10, 0, Math.random()*20-10));
+        flower.model.rotate(new THREE.Quaternion().setFromAxisAngle(THREE.Object3D.DefaultUp, Math.random()*2*Math.PI));
+        this.flowers.push(flower);
+      }
+    });
 
     const direct = new THREE.DirectionalLight({color: 0xffffff});
     direct.position.set(0.1, 1, 0.5);
