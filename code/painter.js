@@ -4,6 +4,7 @@ import {Input} from './input.js';
 class Painter extends Thing {
   constructor(world) {
     super();
+    
     world.when('update', (context) => this.update(context));
 
     const input = new Input()
@@ -22,6 +23,10 @@ class Painter extends Thing {
 
   update() {
 
+  }
+  
+  paint() {
+    console.log('paint paint paint');
   }
 }
 

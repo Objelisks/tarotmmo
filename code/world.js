@@ -1,3 +1,4 @@
+/* globals io */
 import {THREE} from './libs.js';
 import {Actor} from './actor.js';
 import {devices} from './singletons.js';
@@ -6,8 +7,8 @@ import {Painter} from './painter.js';
 import {Terrain} from './terrain.js';
 import {Thing} from './thing.js';
 
-const width = 1024;
-const height = 768;
+const width = 640;
+const height = 480;
 const aspectRatio = width/height;
 
 class World extends Thing {
@@ -23,6 +24,7 @@ class World extends Thing {
     this.player = new LocalPlayer(this);
     this.terrain = new Terrain(this);
     this.painter = new Painter(this);
+    this.socket = io();
 
     const filenames = [
       'fragrant_water_lily_flower.json',

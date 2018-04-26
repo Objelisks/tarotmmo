@@ -4,8 +4,9 @@
   "description": "tarot mmo",
   "main": "server.js",
   "dependencies": {
-    "express": "^4.16.2",
-    "polybooljs": "^1.2.0"
+    "express": "^4.16.3",
+    "polybooljs": "^1.2.0",
+    "socket.io": "^2.1.0"
   },
   "devDependencies": {},
   "scripts": {

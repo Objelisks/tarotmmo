@@ -7,6 +7,8 @@ const UP = new THREE.Vector3(0,1,0);
 const NORTH = new THREE.Vector3(0,0,1);
 const CAMERA_ROTATION = new THREE.Quaternion().setFromUnitVectors(NORTH, CAMERA_FORWARD);
 
+let a_held = false;
+
 /*
   Looks at the device state and emits events.
 */
@@ -19,13 +21,18 @@ class Input extends Thing {
     if(move.lengthSq() > 0) {
       this.emit('move', move);
     }
-
-/*
-    if(drag.lengthSq() > 0) {
-      this.emit('drag', drag);
+    if(delta.a && a_held) {
+      this.emit('hold');
     }
-
-    */
+    if(delta.a && !a_held) {
+      a_held = true;
+      this.emit('action');
+    } else if(!delta.a) {
+      if(a_held) {
+        this.emit('release');
+      }
+      a_held = false;
+    }
   }
 }
 
