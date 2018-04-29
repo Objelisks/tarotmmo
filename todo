@@ -1,0 +1,1 @@
+optimize painter stuff so that garbage collection doesn't slow everything down

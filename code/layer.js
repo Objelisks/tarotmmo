@@ -13,9 +13,11 @@ import {THREE, PolyBool} from './libs.js';
 */
 
 class Layer {
-  constructor() {
+  constructor(color = 0xff0000) {
+    const displayMat = new THREE.MeshBasicMaterial({color: color, wireframe: true});
     this.gon = {regions: [circle(1, 4)], inverted: false};
-    this.display = new THREE.Object3D();
+    this.display = new THREE.Mesh(new THREE.Geometry(), displayMat);
+    this.refreshDisplay();
     this.display.rotateX(Math.PI/2);
   }
 
@@ -43,8 +45,10 @@ class Layer {
   }
   
   refreshDisplay() {
-    this.display.children.forEach(child => this.display.remove(child));
-    this.display.add(new THREE.Mesh(toShapeGeo(this.gon), displayMat));
+    // todo: probably less wasteful way of doing this
+    let newGeo = new THREE.ShapeBufferGeometry(toShapes(this.gon), 1);
+    this.display.geometry.dispose();
+    this.display.geometry = newGeo;
   }
 
   collide(p, r) {
@@ -56,19 +60,17 @@ class Layer {
   }
 }
 
-const displayMat = new THREE.MeshBasicMaterial({color: 0x0000ff, wireframe: true});
-
 const circle = (r, segments, offset = [0, 0]) => {
   let pts = [];
   let p2 = Math.PI * 2;
   for(let i=0; i<segments; i++) {
-    pts.push([Math.cos(i*p2/segments) * r+offset[0], Math.sin(i*p2/segments) * r+offset[1]]);
+    pts.push([Math.cos(i*p2/segments) * r + offset[0], Math.sin(i*p2/segments) * r + offset[1]]);
   }
   return pts;
 };
 
-const toShapeGeo = (polygon) => new THREE.ShapeGeometry(polygon.regions.map(
+const toShapes = (polygon) => polygon.regions.map(
     region => new THREE.Shape(region.map(
-        pt => new THREE.Vector2(pt[0], pt[1])))), 1);
+        pt => new THREE.Vector2(pt[0], pt[1]))));
 
 export {Layer};
