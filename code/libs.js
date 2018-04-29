@@ -1,2 +1,3 @@
 import * as THREE from './libs/three/three.module.js';
-export {THREE};
+import PolyBool from './libs/polybool/polybool.js';
+export {THREE, PolyBool};

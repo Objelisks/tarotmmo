@@ -23,6 +23,7 @@ class World extends Thing {
     });
     this.player = new LocalPlayer(this);
     this.terrain = new Terrain(this);
+    this.activeLayer = this.terrain.nav;
     this.painter = new Painter(this);
     this.socket = io();
 

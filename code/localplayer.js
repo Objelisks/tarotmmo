@@ -1,12 +1,7 @@
 import {Actor} from './actor.js';
 import {Input} from './input.js';
 
-let editMode = false;
-let terrainBrush = {
-  w: 4,
-  h: 4,
-  r: 4,
-};
+let editMode = true;
 
 class LocalPlayer extends Actor {
   constructor(world) {
@@ -29,13 +24,17 @@ class LocalPlayer extends Actor {
   }
   
   action() {
-    if(editMode) {
-      this.world.painter.paint(terrainBrush);
-    }
   }
   
   hold() {
-    
+    if(editMode) {
+      let brush = {
+        x: this.model.obj.position.x,
+        y: this.model.obj.position.z,
+        r: 1.5
+      };
+      this.world.painter.paint(brush);
+    }
   }
   
   release() {

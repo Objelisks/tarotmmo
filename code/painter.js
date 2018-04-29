@@ -6,6 +6,7 @@ class Painter extends Thing {
     super();
     
     world.when('update', (context) => this.update(context));
+    this.world = world;
 
     const input = new Input()
       .when('point', (dir) => this.model.move(dir.multiplyScalar(this.speed)));
@@ -25,8 +26,8 @@ class Painter extends Thing {
 
   }
   
-  paint() {
-    console.log('paint paint paint');
+  paint(brush) {
+    this.world.activeLayer.paint(brush);
   }
 }
 

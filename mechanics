@@ -3,7 +3,7 @@
   pathfinding through world json map
   each has a skill tree to provide to the player,
   maybe can only hold one of three available from each
-  
+  bots simulated as players
   
 
 physically simulated objects that you can drag in/out a portal dimension
@@ -18,7 +18,7 @@ dreams:
 bots:
   wanderers programmed to take joy in simple pleasures
   all npcs are unique
-  based on mythological creates
+  based on mythological creatures
   fancy custom shaders / artwork for each one
   can be walking around in a forest and see your friend jezebel
   provide api for writing bots
@@ -51,11 +51,11 @@ seeds of words
 cross pollination of words
 
 
-tarot:
-cards drawn influence the creation of new areas
-cards drawn are set for an amount of time
-combine your set cards with other players and explore together to have more
-powerful effects
+X tarot: (ditch in favor of npc styling)
+X cards drawn influence the creation of new areas
+X cards drawn are set for an amount of time
+X combine your set cards with other players and explore together to have more
+X powerful effects
 
 layers:
 grass, dust, water, clouds, magic

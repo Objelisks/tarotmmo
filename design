@@ -11,7 +11,8 @@ functionally, the game should be able to work the same.
 server will route packets to the correct players
 will need signalling anyways
 
-Patterns: set pieces can project forces and variables
+Patterns: 
+set pieces can project forces and variables
 of set pieces have a set of linear coefficients that 
 combine forces from everything else, default to no 
 interaction, layers of vector fields, layers can 
@@ -24,7 +25,13 @@ turn off automatic placement of set pieces
 
 
 terrain:
-
+set pieces + moldable terrain
+2d base terrain, but bits that you can jump on top of?
+maybe terrain with heightmaps and only a few (2-3) levels available.
+terrain design is:
+  hopping around from stump to stump
+  hopping across rocks in a stream
+  metroid prime hopping
 
 
 
