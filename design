@@ -1,6 +1,45 @@
 input => move events
 model(move event) => update position
 
+place set pieces that procedurally change themselfs to fit context + params
+have to find the wandering folx to train with them for magic abilities
+
+Networking:
+socket.io
+skip peer to peer for now, can be added on as an optimization,
+functionally, the game should be able to work the same.
+server will route packets to the correct players
+will need signalling anyways
+anyways: no simulation on the server
+this allows clients to 'cheat' and say they're anywhere
+only problem is when modifications are made to the world
+the server needs to see that and persist the changes
+
+Patterns: 
+set pieces can project forces and variables
+of set pieces have a set of linear coefficients that 
+combine forces from everything else, default to no 
+interaction, layers of vector fields, layers can 
+topologically depend on previous layers to multiply 
+forces, use gradients of specific layers to place set 
+pieces, derivatives provide normal and position, 
+constant layers provide flags for toggling styles, 
+antipatterns to apply negative force weights to 
+turn off automatic placement of set pieces
+
+
+terrain:
+set pieces + moldable terrain
+2d base terrain, but bits that you can jump on top of?
+maybe terrain with heightmaps and only a few (2-3) levels available.
+terrain design is:
+  hopping around from stump to stump
+  hopping across rocks in a stream
+  metroid prime hopping
+  optimized fr hops
+
+
+
 
 Libraries:
 

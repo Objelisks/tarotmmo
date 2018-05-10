@@ -1,12 +1,14 @@
 import {Thing} from './thing.js';
-import {Input} from './input.js';
+import {Local} from './input.js';
 
 class Painter extends Thing {
   constructor(world) {
     super();
+    
     world.when('update', (context) => this.update(context));
+    this.world = world;
 
-    const input = new Input()
+    const input = new Local()
       .when('point', (dir) => this.model.move(dir.multiplyScalar(this.speed)));
 
     return this.with(input);
@@ -22,6 +24,10 @@ class Painter extends Thing {
 
   update() {
 
+  }
+  
+  paint(brush) {
+    this.world.activeLayer.paint(brush);
   }
 }
 

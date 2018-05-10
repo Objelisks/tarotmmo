@@ -1,13 +1,14 @@
 import {THREE} from './libs.js';
 import {Actor} from './actor.js';
-import {devices} from './singletons.js';
-import {LocalPlayer} from './localplayer.js';
+import {devices, network} from './singletons.js';
+import {Player} from './player.js';
+import {Local, Remote} from './input.js';
 import {Painter} from './painter.js';
 import {Terrain} from './terrain.js';
 import {Thing} from './thing.js';
 
-const width = 1024;
-const height = 768;
+const width = 640;
+const height = 480;
 const aspectRatio = width/height;
 
 class World extends Thing {
@@ -20,9 +21,12 @@ class World extends Thing {
     this.renderer = new THREE.WebGLRenderer({
       antialias: true,
     });
-    this.player = new LocalPlayer(this);
+    this.player = new Player(this)
+      .input(new Local())
+      .join(this);
     this.terrain = new Terrain(this);
-    this.painter = new Painter(this);
+    this.activeLayer = this.terrain.nav;
+    this.players = {};
 
     const filenames = [
       'fragrant_water_lily_flower.json',
@@ -36,7 +40,7 @@ class World extends Thing {
     this.flowers = [];
     filenames.forEach((filename) => {
       for(let i=0; i<10; i++) {
-        let flower = new Actor(this, `flowers/${filename}`);
+        let flower = new Actor(this, `flowers/${filename}`).join(this);
         flower.model.move(new THREE.Vector3(Math.random()*20-10, 0, Math.random()*20-10));
         flower.model.rotate(new THREE.Quaternion().setFromAxisAngle(THREE.Object3D.DefaultUp, Math.random()*2*Math.PI));
         this.flowers.push(flower);
@@ -57,6 +61,16 @@ class World extends Thing {
 
     this.renderer.setSize(width, height);
     document.body.appendChild(this.renderer.domElement);
+    
+    network.when('new', (player) => {
+      this.players[player.id] = new Player(this)
+        .input(new Remote(player.id))
+        .join(this);
+    });
+    network.when('leave', (player) => {
+      this.players[player.id].leave(this);
+      delete this.players[player.id];
+    });
   }
 
   render() {
