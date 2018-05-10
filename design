@@ -10,6 +10,10 @@ skip peer to peer for now, can be added on as an optimization,
 functionally, the game should be able to work the same.
 server will route packets to the correct players
 will need signalling anyways
+anyways: no simulation on the server
+this allows clients to 'cheat' and say they're anywhere
+only problem is when modifications are made to the world
+the server needs to see that and persist the changes
 
 Patterns: 
 set pieces can project forces and variables
@@ -32,6 +36,7 @@ terrain design is:
   hopping around from stump to stump
   hopping across rocks in a stream
   metroid prime hopping
+  optimized fr hops
 
 
 

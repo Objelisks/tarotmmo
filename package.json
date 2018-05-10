@@ -8,7 +8,6 @@
     "polybooljs": "^1.2.0",
     "socket.io": "^2.1.0"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"

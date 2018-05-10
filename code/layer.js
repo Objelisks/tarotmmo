@@ -1,7 +1,7 @@
 import {THREE, PolyBool} from './libs.js';
 
 /*
-// polygon format
+// polygon format (PolyBool)
 {
   regions: [ // list of regions
     // each region is a list of points
