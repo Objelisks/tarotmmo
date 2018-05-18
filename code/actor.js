@@ -8,13 +8,13 @@ class Actor extends Thing {
     this.world = world;
     this.model = new Model(modelName);
     this.removers = [];
-    world.when('update', (context) => this.update(context), this.removers);
 
     return this.with(this.model);
   }
   
   join(world) {
     this.model.when('mesh', (obj) => world.scene.add(obj), this.removers);
+    world.when('update', (context) => this.update(context), this.removers);
     return this;
   }
   

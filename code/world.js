@@ -76,6 +76,9 @@ class World extends Thing {
   render() {
     devices.update();
     this.emit('update', this);
+    this.camera.position.x = this.player.model.obj.position.x+20;
+    this.camera.position.y = this.player.model.obj.position.y+20;
+    this.camera.position.z = this.player.model.obj.position.z+20;
     this.renderer.render(this.scene, this.camera);
   }
 }

@@ -22,6 +22,10 @@ class Terrain extends Thing {
   update() {
     
   }
+  
+  constructGround() {
+    let collision = this.nav.gon.splice(0);
+  }
 }
 
 export {Terrain};
