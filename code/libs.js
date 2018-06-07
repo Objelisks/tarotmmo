@@ -1,6 +1,8 @@
-import * as THREE from './libs/three/three.module.js';
+/* global THREE */
+
+let THREE_module = THREE;
+
 import PolyBool from './libs/polybool/polybool.js';
 import simplify from './libs/simplify/simplify.js';
-console.log(simplify);
 
-export {THREE, PolyBool, simplify};
+export {THREE_module as THREE, PolyBool, simplify};
