@@ -1,4 +1,4 @@
-import {THREE, PolyBool} from './libs.js';
+import {THREE, PolyBool, simplify} from './libs.js';
 
 /*
 // polygon format (PolyBool)
@@ -41,6 +41,15 @@ class Layer {
       inverted: false,
     };
     this.gon = PolyBool.union(this.gon, brushgon);
+    this.simplify();
+    this.refreshDisplay();
+  }
+  
+  simplify() {
+    this.gon = {
+      regions: this.gon.regions.map(region => dxy(simplify(xy(region), 0.25))),
+      inverted: this.gon.inverted,
+    };
     this.refreshDisplay();
   }
   
@@ -72,5 +81,8 @@ const circle = (r, segments, offset = [0, 0]) => {
 const toShapes = (polygon) => polygon.regions.map(
     region => new THREE.Shape(region.map(
         pt => new THREE.Vector2(pt[0], pt[1]))));
+
+const xy = (points) => points.map(point => ({x: point[0], y: point[1]}));
+const dxy = (points) => points.map(point => [point.x, point.y]);
 
 export {Layer};

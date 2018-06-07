@@ -42,7 +42,7 @@ class Player extends Actor {
   }
   
   release() {
-    
+    this.world.terrain.constructGround();
   }
 }
 

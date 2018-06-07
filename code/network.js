@@ -25,7 +25,7 @@ class Network extends Thing {
     this.socket.on('new', (player) => {
       console.log('new', player.id, 'local', this.socket.id);
       if(!this.actors[player.id] && player.id != this.socket.id) {
-        this.actors[player.id] = new DeltaTracker();
+        this.actors[player.id] = new DeltaTracker(player.id);
         this.emit('new', player);
         this.socket.emit('new');
       }

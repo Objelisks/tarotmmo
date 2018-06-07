@@ -6,6 +6,8 @@ import {Local, Remote} from './input.js';
 import {Painter} from './painter.js';
 import {Terrain} from './terrain.js';
 import {Thing} from './thing.js';
+import {Plant} from './things/plant.js';
+import {flower} from './things/plant_data.js';
 
 const width = 640;
 const height = 480;
@@ -18,9 +20,7 @@ class World extends Thing {
     this.scene = new THREE.Scene();
     //let camera = new THREE.OrthographicCamera(-25*aspectRatio, 25*aspectRatio, 25, -25, 0.1, 100);
     this.camera = new THREE.PerspectiveCamera(30, aspectRatio, 1, 1000);
-    this.renderer = new THREE.WebGLRenderer({
-      antialias: true,
-    });
+    
     this.player = new Player(this)
       .input(new Local())
       .join(this);
@@ -28,6 +28,7 @@ class World extends Thing {
     this.activeLayer = this.terrain.nav;
     this.players = {};
 
+    /*
     const filenames = [
       'fragrant_water_lily_flower.json',
       'fragrant_water_lily_leaf.json',
@@ -46,6 +47,15 @@ class World extends Thing {
         this.flowers.push(flower);
       }
     });
+    */
+    
+    this.plants = [];
+    for(let i=0; i<15; i++) {
+      const plant = new Plant(this, flower).join(this);
+      plant.obj.position.set(Math.random()*20-10, 0, Math.random()*20-10);
+      plant.obj.rotateY(Math.random()*Math.PI*2);
+      this.plants.push(plant);
+    }
 
     const direct = new THREE.DirectionalLight({color: 0xffffff});
     direct.position.set(0.1, 1, 0.5);
@@ -59,9 +69,6 @@ class World extends Thing {
     this.camera.position.z = 20;
     this.camera.lookAt(new THREE.Vector3());
 
-    this.renderer.setSize(width, height);
-    document.body.appendChild(this.renderer.domElement);
-    
     network.when('new', (player) => {
       this.players[player.id] = new Player(this)
         .input(new Remote(player.id))
@@ -73,10 +80,13 @@ class World extends Thing {
     });
   }
 
-  render() {
+  render(renderer) {
     devices.update();
     this.emit('update', this);
-    this.renderer.render(this.scene, this.camera);
+    this.camera.position.x = this.player.model.obj.position.x+20;
+    this.camera.position.y = this.player.model.obj.position.y+20;
+    this.camera.position.z = this.player.model.obj.position.z+20;
+    renderer.render(this.scene, this.camera);
   }
 }
 

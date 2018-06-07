@@ -3,6 +3,8 @@
   pathfinding through world json map
   each has a skill tree to provide to the player,
   maybe can only hold one of three available from each
+  maybe there is some overlap between npcs, but finding
+  combos allows you to hold two that you wouldn't be able to get otherwise
   bots simulated as players
   
 
@@ -14,6 +16,7 @@ dreams:
   sit -> rest / meditate / dream
   alternate map
   generalized: lots of planes accessible from lots of places
+  shortcuts through alternate dimensions
 
 bots:
   wanderers programmed to take joy in simple pleasures
@@ -65,7 +68,7 @@ maps:
 hand drawn?
 generated, but you need to explore to create them?
 what if:
-the world is proc gen
+X the world is proc gen
 XXXX don't like maps.
   ui would be too non-diagetic
   would need a lot of infrastructure to allow trading/sharing maps
