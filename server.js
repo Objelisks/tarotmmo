@@ -1,7 +1,9 @@
 const express = require('express');
 const http = require('http');
 const Server = require('socket.io');
+const fs = require('fs');
 
+let adminMode = true; // allows destructive edits to world
 let app = express();
 let server = http.Server(app);
 let io = new Server(server);
@@ -27,6 +29,12 @@ io.on('connection', (socket) => {
     move.id = socket.id;
     socket.to(socket.room).emit('moved', move);
   });
+  if(adminMode) {
+    socket.on('save', (data) => {
+      console.log('saving', data.name);
+      fs.writeFile(`./data/places/${data.name}.json`, JSON.stringify(data));
+    });
+  }
   socket.on('disconnecting', () => {
     socket.to(socket.room).emit('leave', {id: socket.id});
   });

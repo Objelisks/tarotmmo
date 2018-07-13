@@ -42,6 +42,14 @@ export const flower = {
   ']': actions.pop,
 };
 
+export const grass = {
+  start: 'S',
+  S: 's',
+  s: actions.stem,
+  'g': actions.grow(0.7),
+  '^': actions.offset(0,1,0),
+};
+
 /**
   start: 'sSf',
   S: 's[vl+vl]^S',

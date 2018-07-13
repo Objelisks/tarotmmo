@@ -1,9 +1,10 @@
 import {THREE} from './libs.js';
 import {World} from './world.js';
-import {FlowerEditor} from './flowereditor.js';
+import {testMain} from './test.js';
+
+testMain();
 
 const world = new World();
-const editor = new FlowerEditor();
 
 const width = 640;
 const height = 480;
@@ -18,7 +19,6 @@ document.body.appendChild(renderer.domElement);
 const play = () => {
   requestAnimationFrame(play);
   world.render(renderer);
-  //editor.render(renderer);
 };
 
 play();

@@ -2,12 +2,13 @@ import {THREE} from './libs.js';
 import {Actor} from './actor.js';
 import {devices, network} from './singletons.js';
 import {Player} from './player.js';
-import {Local, Remote} from './input.js';
+import {Local, Remote, Keyvent} from './input.js';
 import {Painter} from './painter.js';
-import {Terrain} from './terrain.js';
+import {Terrain, Plants} from './layers.js';
+import {Layer} from './layer.js';
 import {Thing} from './thing.js';
 import {Plant} from './things/plant.js';
-import {flower} from './things/plant_data.js';
+import {flower, grass} from './things/plant_data.js';
 
 const width = 640;
 const height = 480;
@@ -21,12 +22,26 @@ class World extends Thing {
     //let camera = new THREE.OrthographicCamera(-25*aspectRatio, 25*aspectRatio, 25, -25, 0.1, 100);
     this.camera = new THREE.PerspectiveCamera(30, aspectRatio, 1, 1000);
     
+    this.input = new Local();
+    
+    this.name = 'temp';
+    
     this.player = new Player(this)
-      .input(new Local())
+      .input(this.input)
       .join(this);
-    this.terrain = new Terrain(this);
-    this.activeLayer = this.terrain.nav;
+    //this.when('update', (context) => this.player.update(context));
+    this.layers = [
+      new Layer().does(new Terrain(this).show(this)).show(this),
+      new Layer().does(new Plants(this, flower, 0.2).show(this)).show(this),
+    ];
+    this.activeLayerIndex = 0;
+    this.activeLayer = this.layers[this.activeLayerIndex];
     this.players = {};
+    
+    this.input
+      .when('switchleft', (e) => e == Keyvent.PRESSED ? this.rotateLayerSelection(true) : null)
+      .when('switchright', (e) => e == Keyvent.PRESSED ? this.rotateLayerSelection(false) : null)
+      .when('save', (e) => e == Keyvent.PRESSED ? this.save() : null);
 
     /*
     const filenames = [
@@ -46,16 +61,17 @@ class World extends Thing {
         flower.model.rotate(new THREE.Quaternion().setFromAxisAngle(THREE.Object3D.DefaultUp, Math.random()*2*Math.PI));
         this.flowers.push(flower);
       }
-    });
-    */
+    });*/
     
+    /*
     this.plants = [];
     for(let i=0; i<15; i++) {
-      const plant = new Plant(this, flower).join(this);
+      const plant = new Plant(this, flower).join(this.scene);
       plant.obj.position.set(Math.random()*20-10, 0, Math.random()*20-10);
       plant.obj.rotateY(Math.random()*Math.PI*2);
       this.plants.push(plant);
     }
+    */
 
     const direct = new THREE.DirectionalLight({color: 0xffffff});
     direct.position.set(0.1, 1, 0.5);
@@ -75,9 +91,19 @@ class World extends Thing {
         .join(this);
     });
     network.when('leave', (player) => {
-      this.players[player.id].leave(this);
-      delete this.players[player.id];
+      if(this.players[player.id]) {
+        this.players[player.id].leave(this);
+        delete this.players[player.id];
+      }
     });
+  }
+  
+  getActiveLayer() {
+    return this.layers[this.activeLayerIndex];
+  }
+  
+  rotateLayerSelection(left) {
+    this.activeLayerIndex = mod(this.activeLayerIndex + (left ? -1 : 1), this.layers.length);
   }
 
   render(renderer) {
@@ -88,6 +114,23 @@ class World extends Thing {
     this.camera.position.z = this.player.model.obj.position.z+20;
     renderer.render(this.scene, this.camera);
   }
+  
+  save() {
+    console.log('save');
+    let name = window.prompt('name:::', 'test') || 'test';
+    network.send('save', this.serialize(name));
+  }
+  
+  serialize(name) {
+    let worldjson = {
+      name: name,
+      layers: this.layers.map(layer => layer.serialize()),
+      objects: [],
+    };
+    return worldjson;
+  }
 }
+
+const mod = (x, y) => (x+y)%y;
 
 export {World};
