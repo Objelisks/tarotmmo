@@ -22,20 +22,27 @@ class Input extends Thing {
     if(move.lengthSq() > 0) {
       this.emit('move', move);
     }
-    if(delta.a && this.held.a) {
-      this.emit('hold');
-    }
-    if(delta.a && !this.held.a) {
-      this.held.a = true;
-      this.emit('action');
-    } else if(!delta.a) {
-      if(this.held.a) {
-        this.emit('release');
+    this.handle(delta, 'action');
+    this.handle(delta, 'switchleft');
+    this.handle(delta, 'switchright');
+    this.handle(delta, 'save');
+  }
+  
+  delta() { return {}; }
+  
+  handle(delta, event) {
+    if(delta[event]) { 
+      if(this.held[event]) {
+        this.emit(event, Keyvent.HELD);
+      } else {
+        this.emit(event, Keyvent.PRESSED);
+        this.held[event] = true;
       }
-      this.held.a = false;
+    } else if(!delta[event] && this.held[event]) {
+      this.emit(event, Keyvent.RELEASED);
+      this.held[event] = false;
     }
   }
-  delta() { return {}; }
 }
 
 /*
@@ -67,4 +74,10 @@ class Remote extends Input {
   }
 }
 
-export {Local, Remote};
+const Keyvent = {
+  PRESSED: 0,
+  HELD: 1,
+  RELEASED: 2,
+};
+
+export {Local, Remote, Keyvent};

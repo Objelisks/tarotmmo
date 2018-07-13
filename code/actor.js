@@ -12,14 +12,14 @@ class Actor extends Thing {
     return this.with(this.model);
   }
   
-  join(world) {
-    this.model.when('mesh', (obj) => world.scene.add(obj), this.removers);
-    world.when('update', (context) => this.update(context), this.removers);
+  join(place) {
+    this.model.when('mesh', (obj) => place.scene.add(obj), this.removers);
+    place.when('update', (context) => this.update(context), this.removers);
     return this;
   }
   
-  leave(world) {
-    this.model.when('mesh', (obj) => world.scene.remove(obj), this.removers);
+  leave(place) {
+    this.model.when('mesh', (obj) => place.scene.remove(obj), this.removers);
     this.removers.forEach(remover => remover());
     return this;
   }

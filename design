@@ -1,5 +1,24 @@
-input => move events
-model(move event) => update position
+Save/Load aka Editor Mode aka Admin Mode
+login? what if dont need authentication ever because develop locally
+prod server doesn't allow uploading
+alert dialog
+
+Layers:
+used for:
+  exit zones
+  plant distributions
+  collision
+  ground + heightmap
+needs:
+  density map
+  link to generator/callback
+  saving all that
+layer syntax:
+  let collision = new Layer({region}).does(collides).does(navmap);
+  let ground = new Layer({region}).does(generator(terrain)));
+  let flowers = new Layer({region}).does(generator(plant(flower)));
+  let exitlayers = exits.map(e => new Layer({region: e.region}).does(exit(e.meta)));
+
 
 place set pieces that procedurally change themselfs to fit context + params
 have to find the wandering folx to train with them for magic abilities

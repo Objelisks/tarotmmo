@@ -1,14 +1,4 @@
 const gamepad = {};
-const keys = ['left','right','up','down','a','b'];
-const state = keys.reduce((p,c) => Object.assign(p, {[c]: false}), {});
-const keyboardMap = {
-  'ArrowLeft': 'left',
-  'ArrowRight': 'right',
-  'ArrowUp': 'up',
-  'ArrowDown': 'down',
-  'x': 'a',
-  'c': 'b',
-};
 
 const HORIZONTAL_AXIS = 0;
 const VERTICAL_AXIS = 1;
@@ -42,8 +32,8 @@ gamepad.update = function() {
   return {
     'horizontal': -deadzone(gamepad.axes[HORIZONTAL_AXIS]),
     'vertical': -deadzone(gamepad.axes[VERTICAL_AXIS]),
-    'a': gamepad.buttons[A_BUTTON].value,
-    'b': gamepad.buttons[B_BUTTON].value,
+    'action': gamepad.buttons[A_BUTTON].value,
+    'save': gamepad.buttons[B_BUTTON].value,
   };
 };
 

@@ -1,4 +1,5 @@
 import {Actor} from './actor.js';
+import {Keyvent} from './input.js';
 
 let editMode = true;
 
@@ -14,9 +15,13 @@ class Player extends Actor {
   input(strat) {
     strat
       .when('move', (dir) => this.move(dir), this.removers)
-      .when('action', () => this.action(), this.removers)
-      .when('hold', () => this.hold(), this.removers)
-      .when('release', () => this.release(), this.removers);
+      .when('action', (e) => {
+        switch(e) {
+          case Keyvent.PRESSED: this.action(); break;
+          case Keyvent.HELD: this.hold(); break;
+          case Keyvent.RELEASED: this.release(); break;
+        }
+        }, this.removers);
 
     return this.with(strat);
   }
@@ -37,12 +42,12 @@ class Player extends Actor {
         y: this.model.obj.position.z,
         r: 1.5,
       };
-      this.world.activeLayer.paint(brush);
+      this.world.getActiveLayer().paint(brush);
     }
   }
   
   release() {
-    this.world.terrain.constructGround();
+    this.world.getActiveLayer().finish();
   }
 }
 

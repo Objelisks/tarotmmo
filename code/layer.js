@@ -14,23 +14,18 @@ import {THREE, PolyBool, simplify} from './libs.js';
 
 class Layer {
   constructor(color = 0xff0000) {
+    this.color = color;
     const displayMat = new THREE.MeshBasicMaterial({color: color, wireframe: true});
     this.gon = {regions: [circle(1, 4)], inverted: false};
     this.display = new THREE.Mesh(new THREE.Geometry(), displayMat);
     this.refreshDisplay();
     this.display.rotateX(Math.PI/2);
+    this.doings = [];
   }
 
-  findPath(p1, p2) {
-
-  }
-
-  getRandomPoint() {
-
-  }
-
-  getSetOfPoints(seed = 0) {
-
+  does(strat) {
+    this.doings.push(strat);
+    return this;
   }
 
   paint(brush) {
@@ -41,31 +36,39 @@ class Layer {
       inverted: false,
     };
     this.gon = PolyBool.union(this.gon, brushgon);
-    this.simplify();
+    this.simplifySelf();
+    this.doings.forEach((doing) => doing.paint ? doing.paint(this.gon) : null);
     this.refreshDisplay();
   }
   
-  simplify() {
+  simplifySelf() {
     this.gon = {
       regions: this.gon.regions.map(region => dxy(simplify(xy(region), 0.25))),
       inverted: this.gon.inverted,
     };
-    this.refreshDisplay();
   }
   
+  finish() {
+    this.doings.forEach((doing) => doing.finish ? doing.finish(this.gon) : null);
+  }
+    
   refreshDisplay() {
     // todo: probably less wasteful way of doing this
     let newGeo = new THREE.ShapeBufferGeometry(toShapes(this.gon), 1);
     this.display.geometry.dispose();
     this.display.geometry = newGeo;
   }
-
-  collide(p, r) {
-
-  }
   
   show(world) {
     world.scene.add(this.display);
+    return this;
+  }
+  
+  serialize() {
+    return {
+      regions: this.gon.regions,
+      color: this.color,
+    };
   }
 }
 

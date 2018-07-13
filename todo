@@ -1,1 +1,17 @@
-optimize painter stuff so that garbage collection doesn't slow everything down
+make terrain look better
+allow switching which layer we're drawing to
+add collision with players
+
+level saving/loading
+level exits
+server level streaming
+switching between layers
+adding/removing layers
+configuring layers
+  type, params
+more plants
+more plant features
+  circle, leafs, wavy bits, wind, collision
+add network keyframes
+better gamepad support
+collision against layers

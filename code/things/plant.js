@@ -16,7 +16,7 @@ class Plant extends Actor {
     
     let meshes = this.build(this.proto);
     meshes.forEach(mesh => this.lines.mergeMesh(mesh));
-    world.scene.add(this.obj);
+    //world.scene.add(this.obj);
     
     // todo: move line geometry to global context so that its all one draw call
     const stemgeo = new THREE.LineSegmentsGeometry();
