@@ -5,7 +5,7 @@ import {Actor} from '../actor.js';
 let pt = new THREE.Vector3();
 
 class Plant extends Actor {
-  constructor(world, proto) {
+  constructor(proto) {
     super();
     
     this.proto = proto;
@@ -16,7 +16,6 @@ class Plant extends Actor {
     
     let meshes = this.build(this.proto);
     meshes.forEach(mesh => this.lines.mergeMesh(mesh));
-    //world.scene.add(this.obj);
     
     // todo: move line geometry to global context so that its all one draw call
     const stemgeo = new THREE.LineSegmentsGeometry();

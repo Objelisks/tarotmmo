@@ -27,6 +27,7 @@ const actions = {
 };
 
 export const flower = {
+  name: 'flower',
   start: '[RRRRRR]S',
   S: '[RRRRRR]s^s^s^gS',
   R: '([vs^vgs^,]',
@@ -43,6 +44,7 @@ export const flower = {
 };
 
 export const grass = {
+  name: 'grass',
   start: 'S',
   S: 's',
   s: actions.stem,

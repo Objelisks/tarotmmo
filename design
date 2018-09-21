@@ -1,7 +1,43 @@
+Zones
+  player needs
+    current zone mesh data
+    current list of players
+
+Networking
+  player sends
+    current position
+  server sends
+
+New New Update Datastructure
+  map of actors
+  d3 style selection joins (enter, exit)
+
+Events
+  network
+    player join/leave/input
+    data load (zone, state, objects)
+    no more delta
+    
+A Player Is A Collection Of
+  mesh
+  props
+  input type
+
+
+New Update Datastructure
+  Array of updateables
+  emitter of events
+    world:
+      players
+      layers
+      singletons (devices,input,camera)
+
 Save/Load aka Editor Mode aka Admin Mode
 login? what if dont need authentication ever because develop locally
 prod server doesn't allow uploading
 alert dialog
+serialization: tag fields to keep/map
+  recursively serialize to primitives
 
 Layers:
 used for:
