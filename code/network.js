@@ -21,21 +21,21 @@ class Network extends Thing {
     this.socket = io();
     this.socket.on('connect', (connection) => {
       console.log('connected');
+      console.log('i am:', this.socket.id);
     });
-    this.socket.on('new', (player) => {
-      console.log('new', player.id, 'local', this.socket.id);
-      if(!this.actors[player.id] && player.id != this.socket.id) {
-        this.actors[player.id] = new DeltaTracker(player.id);
-        this.emit('new', player);
-        this.socket.emit('new');
-      }
+    this.socket.on('hi im new', (player) => {
+      this.playerJoin(player);
+      this.socket.emit('hi new im', this.socket.id);
     });
-    this.socket.on('leave', (player) => {
-      console.log('leave', player.id);
+    this.socket.on('hi new im', (player) => {
+      this.playerJoin(player);
+    });
+    this.socket.on('im leaving', (player) => {
+      console.log('a player is leaving', player.id);
       delete this.actors[player.id];
-      this.emit('leave', player);
+      this.emit('player left', player);
     });
-    this.socket.on('moved', (move) => {
+    this.socket.on('i moved', (move) => {
       // find corresponding actor
       // queue up movement delta
       if(this.actors[move.id]) {
@@ -48,8 +48,16 @@ class Network extends Thing {
     return this.actors[id];
   }
   
-  send(type, data) {
-    this.socket.emit(type, data);
+  send(...args) {
+    this.socket.emit(...args);
+  }
+  
+  playerJoin(player, isResponse) {
+    console.log('a new player is visible:', player.id);
+    if(!this.actors[player.id] && player.id != this.socket.id) {
+      this.actors[player.id] = new DeltaTracker(player.id);
+      this.emit('new player', player);
+    }
   }
 }
 

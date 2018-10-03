@@ -2,7 +2,7 @@ make terrain look better
 allow switching which layer we're drawing to
 add collision with players
 
-level saving/loading
+//level saving/loading
 level exits
 server level streaming
 switching between layers
@@ -15,3 +15,9 @@ more plant features
 add network keyframes
 better gamepad support
 collision against layers
+garbage collection pass
+
+
+
+
+newtodo

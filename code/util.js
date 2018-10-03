@@ -18,7 +18,13 @@ const findMinMax = (arr) => arr
 let id = 0;
 let eps = 0.0001;
 
-export function pointInsideRegion(pt, region){
+export const inlog = (...args) => {
+  console.log(...args);
+  return Promise.resolve();
+};
+
+// stole from polybool code
+export const pointInsideRegion = (pt, region) => {
   var x = pt[0];
   var y = pt[1];
   var last_x = region[region.length - 1][0];
@@ -41,7 +47,7 @@ export function pointInsideRegion(pt, region){
 };
 
 // https://www.wikihow.com/Calculate-the-Area-of-a-Polygon
-export function areaInsideRegion(region) {
+export const areaInsideRegion = (region) => {
   let next = (i) => mod(i+1, region.length);
   return Math.abs(region
     .map(([x, y], i) => [x*region[next(i)][1], y*region[next(i)][0]])
@@ -50,7 +56,7 @@ export function areaInsideRegion(region) {
 
 // https://gist.github.com/mbostock/1893974#file-index-html-L59
 // https://github.com/d3/d3-quadtree
-export function blueNoisePolygonGen(region, padding) {
+export const blueNoisePolygonGen = (region, padding) => {
   let wmm = findMinMax(region.map(pt => pt[0]));
   let hmm = findMinMax(region.map(pt => pt[1]));
   let w = wmm[1] - wmm[0];
@@ -96,4 +102,4 @@ export function blueNoisePolygonGen(region, padding) {
   };
 };
 
-const mod = (x, y) => (x+y)%y;
+export const mod = (x, y) => (x+y)%y;

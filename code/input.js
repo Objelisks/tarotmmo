@@ -51,7 +51,7 @@ class Input extends Thing {
 class Local extends Input {
   update(context) {
     Input.prototype.update.call(this, context);
-    network.send('move', this.delta());
+    network.send('i moved', this.delta());
   }
   
   delta() {
@@ -78,6 +78,9 @@ const Keyvent = {
   PRESSED: 0,
   HELD: 1,
   RELEASED: 2,
+  onPress: (cb) => (e) => e == Keyvent.PRESSED ? cb() : null,
+  onHeld: (cb) => (e) => e == Keyvent.HELD ? cb() : null,
+  onRelease: (cb) => (e) => e == Keyvent.RELEASED ? cb() : null,
 };
 
 export {Local, Remote, Keyvent};

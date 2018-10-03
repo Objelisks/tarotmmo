@@ -13,12 +13,12 @@ import {THREE, PolyBool, simplify} from './libs.js';
 */
 
 class Layer {
-  constructor(color = 0xff0000) {
+  constructor(regions = [], color = 0xff0000) {
     this.color = color;
     const displayMat = new THREE.MeshBasicMaterial({color: color, wireframe: true});
-    this.gon = {regions: [circle(1, 4)], inverted: false};
+    this.gon = {regions: regions, inverted: false};
     this.display = new THREE.Mesh(new THREE.Geometry(), displayMat);
-    this.refreshDisplay();
+    this.refreshDebug();
     this.display.rotateX(Math.PI/2);
     this.doings = [];
   }
@@ -26,6 +26,10 @@ class Layer {
   does(strat) {
     this.doings.push(strat);
     return this;
+  }
+  
+  update(context) {
+    this.doings.forEach((doing) => doing.update ? doing.update(context, this.gon) : null);
   }
 
   paint(brush) {
@@ -38,7 +42,11 @@ class Layer {
     this.gon = PolyBool.union(this.gon, brushgon);
     this.simplifySelf();
     this.doings.forEach((doing) => doing.paint ? doing.paint(this.gon) : null);
-    this.refreshDisplay();
+    this.refreshDebug();
+  }
+  
+  finish() {
+    this.doings.forEach((doing) => doing.finish ? doing.finish(this.gon) : null);
   }
   
   simplifySelf() {
@@ -46,21 +54,17 @@ class Layer {
       regions: this.gon.regions.map(region => dxy(simplify(xy(region), 0.25))),
       inverted: this.gon.inverted,
     };
-  }
-  
-  finish() {
-    this.doings.forEach((doing) => doing.finish ? doing.finish(this.gon) : null);
-  }
-    
-  refreshDisplay() {
+  }  
+  refreshDebug() {
     // todo: probably less wasteful way of doing this
     let newGeo = new THREE.ShapeBufferGeometry(toShapes(this.gon), 1);
     this.display.geometry.dispose();
     this.display.geometry = newGeo;
   }
   
-  show(world) {
-    world.scene.add(this.display);
+  show(scene) {
+    this.finish();
+    scene.add(this.display);
     return this;
   }
   
@@ -68,6 +72,7 @@ class Layer {
     return {
       regions: this.gon.regions,
       color: this.color,
+      doings: this.doings.map(doing => doing.serialize()),
     };
   }
 }

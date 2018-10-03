@@ -1,7 +1,10 @@
 import {Actor} from './actor.js';
+import {THREE} from './libs.js';
 import {Keyvent} from './input.js';
+import {Model} from './model.js';
 
 let editMode = true;
+let movement = new THREE.Vector3();
 
 class Player extends Actor {
   constructor(world) {
@@ -16,18 +19,18 @@ class Player extends Actor {
     strat
       .when('move', (dir) => this.move(dir), this.removers)
       .when('action', (e) => {
-        switch(e) {
-          case Keyvent.PRESSED: this.action(); break;
-          case Keyvent.HELD: this.hold(); break;
-          case Keyvent.RELEASED: this.release(); break;
-        }
+          switch(e) {
+            case Keyvent.PRESSED: this.action(); break;
+            case Keyvent.HELD: this.hold(); break;
+            case Keyvent.RELEASED: this.release(); break;
+          }
         }, this.removers);
 
     return this.with(strat);
   }
   
   move(dir) {
-    this.model.move(dir.multiplyScalar(this.speed));
+    this.model.move(movement.copy(dir).multiplyScalar(this.speed));
     //this.world.socket.emit('move', {x: this.model.obj.position.x, y: this.model.obj.position.y, z: this.model.obj.position.z});
   }
   
@@ -51,4 +54,14 @@ class Player extends Actor {
   }
 }
 
-export {Player};
+const player = () => {
+  return {
+    model: new Model('sphere'),
+  };
+}
+
+player.pos = (player) => player.model.obj.position
+player.mesh = (player) => player.model.obj
+player.update = (player) => null
+
+export {Player, player};

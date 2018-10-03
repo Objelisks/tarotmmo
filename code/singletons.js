@@ -1,10 +1,5 @@
 import {Devices} from './devices.js';
 import {Network} from './network.js';
 
-const devices = new Devices();
-const network = new Network();
-
-export {
-  devices,
-  network,
-};
+export const devices = new Devices();
+export const network = new Network();
