@@ -1,6 +1,7 @@
 import {Actor} from './actor.js';
 import {THREE} from './libs.js';
 import {Keyvent} from './input.js';
+import {Model} from './model.js';
 
 let editMode = true;
 let movement = new THREE.Vector3();
@@ -53,4 +54,14 @@ class Player extends Actor {
   }
 }
 
-export {Player};
+const player = () => {
+  return {
+    model: new Model('sphere'),
+  };
+}
+
+player.pos = (player) => player.model.obj.position
+player.mesh = (player) => player.model.obj
+player.update = (player) => null
+
+export {Player, player};

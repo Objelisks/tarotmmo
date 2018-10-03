@@ -17,6 +17,12 @@ const inlog = (...args) => {
 };
 const ifok = (err, data, fn) => err ? fn('error', err) : fn('ok', data);
 
+const events = [
+  'hi im new',
+  'hi new im',
+  'i moved',
+];
+
 io.on('connection', (socket) => {
   console.log('user connected');
   // what room are you in
@@ -27,15 +33,9 @@ io.on('connection', (socket) => {
   socket.room = 'tutorial';
   socket.join(socket.room);
   //socket.to(socket.room).emit('hi im new', {id: socket.id});
-  socket.on('hi im new', () => {
-    socket.to(socket.room).emit('hi im new', {id: socket.id});
-  });
-  socket.on('hi new im', () => {
-    socket.to(socket.room).emit('hi new im', {id: socket.id});
-  });
-  socket.on('i moved', (move) => {
-    socket.to(socket.room).emit('i moved', {...move, id: socket.id});
-  });
+  events.forEach(event => socket.on(event, (data={}) => {
+    socket.to(socket.room).emit(event, {...data, id: socket.id});
+  }));
   if(adminMode) {
     socket.on('save', (data) => {
       console.log('saving', data.name);

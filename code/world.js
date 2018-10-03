@@ -1,7 +1,7 @@
 import {THREE} from './libs.js';
 import {Actor} from './actor.js';
 import * as singletons from './singletons.js';
-import {Player} from './player.js';
+import {Player, player} from './player.js';
 import {Local, Remote, Keyvent} from './input.js';
 import {Painter} from './painter.js';
 import * as layers from './layers.js';
@@ -32,9 +32,11 @@ class World extends Thing {
     this.name = 'temp';
     this.activeLayerIndex = 0;
     this.players = {
-      'local': new Player(this).input(this.input).join(this),
-      'here': {mesh: }
+//      'local': new Player(this).input(this.input).join(this),
+      'local': player()
     };
+    Object.keys(this.players).map(id => this.scene.add(player.mesh(this.players[id])));
+    
     this.layers = [];
     
     this.camera.position.x = 20;
@@ -42,15 +44,16 @@ class World extends Thing {
     this.camera.position.z = 20;
     this.camera.lookAt(new THREE.Vector3());
 
-    network.when('new player', (player) => {
-      this.players[player.id] = new Player(this)
-        .input(new Remote(player.id))
-        .join(this);
+    network.when('new player', (p) => {
+      // this.players[player.id] = new Player(this)
+      //   .input(new Remote(player.id))
+      //   .join(this);
+      this.players[p.id] = player();
     });
-    network.when('player left', (player) => {
-      if(this.players[player.id]) {
-        this.players[player.id].leave(this);
-        delete this.players[player.id];
+    network.when('player left', (p) => {
+      if(this.players[p.id]) {
+        this.scene.remove(player.mesh(this.players[p.id]));
+        delete this.players[p.id];
       }
     });
     
@@ -64,11 +67,11 @@ class World extends Thing {
   rotateLayerSelection(left) {
     this.activeLayerIndex = mod(this.activeLayerIndex + (left ? -1 : 1), this.layers.length);
   }
-
-  render(renderer) {
-    //todo: detach render from update
+  
+  update() {
     Object.keys(singletons).forEach(id => singletons[id].update(this));
-    Object.keys(this.players).forEach(id => this.players[id].update(this));
+    //Object.keys(this.players).forEach(id => this.players[id].update(this));
+    Object.values(this.players).forEach(player.update);
     this.layers.forEach(layer => layer.update(this));
     
     if(this.players.local) {
@@ -76,6 +79,10 @@ class World extends Thing {
       this.camera.position.y = this.players.local.model.obj.position.y+20;
       this.camera.position.z = this.players.local.model.obj.position.z+20;
     }
+  }
+
+  render(renderer) {
+    this.update();
     renderer.render(this.scene, this.camera);
   }
   
@@ -119,7 +126,8 @@ class World extends Thing {
   }
   
   transitionTo(newModel) {
-    Object.keys(this.players).forEach(id => this.players[id].leave(this));
+    //Object.keys(this.players).forEach(id => this.players[id].leave(this));
+    Object.entries(this.players).forEach(([id, p]) => this.scene.remove(player.mesh(p)))
     this.players = {};
     
     this.name = newModel.name;

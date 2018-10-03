@@ -17,11 +17,13 @@ Events
     player join/leave/input
     data load (zone, state, objects)
     no more delta
-    
-A Player Is A Collection Of
+
+A Player Is Data
   mesh
-  props
   input type
+  ...props
+
+network.map(input[network.id]).forEach(updateObject(players[input.id], input.state))
 
 
 New Update Datastructure
