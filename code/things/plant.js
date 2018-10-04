@@ -1,13 +1,10 @@
 /* globals Map */
 import {THREE} from '../libs.js';
-import {Actor} from '../actor.js';
 
 let pt = new THREE.Vector3();
 
-class Plant extends Actor {
+class Plant {
   constructor(proto) {
-    super();
-    
     this.proto = proto;
     this.iter = 7;
     this.obj = new THREE.Object3D();

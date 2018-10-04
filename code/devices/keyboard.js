@@ -35,4 +35,6 @@ keyboard.update = function() {
   };
 };
 
+keyboard.supported = true;
+
 export {keyboard};

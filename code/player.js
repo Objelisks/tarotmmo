@@ -1,4 +1,3 @@
-import {Actor} from './actor.js';
 import {THREE} from './libs.js';
 import {Keyvent} from './input.js';
 import {Model} from './model.js';
@@ -6,31 +5,44 @@ import {Model} from './model.js';
 let editMode = true;
 let movement = new THREE.Vector3();
 
-class Player extends Actor {
-  constructor(world) {
-    super(world, 'sphere');
+// class Player extends Actor {
+//   constructor(world) {
+//     super(world, 'sphere');
 
-    this.speed = 0.2;
+//     this.speed = 0.2;
     
-    return this;
-  }
+//     return this;
+//   }
   
-  input(strat) {
-    strat
-      .when('move', (dir) => this.move(dir), this.removers)
-      .when('action', (e) => {
-          switch(e) {
-            case Keyvent.PRESSED: this.action(); break;
-            case Keyvent.HELD: this.hold(); break;
-            case Keyvent.RELEASED: this.release(); break;
-          }
-        }, this.removers);
+//   input(strat) {
+//     strat
+//       .when('move', (dir) => this.move(dir), this.removers)
+//       .when('action', (e) => {
+//           switch(e) {
+//             case Keyvent.PRESSED: this.action(); break;
+//             case Keyvent.HELD: this.hold(); break;
+//             case Keyvent.RELEASED: this.release(); break;
+//           }
+//         }, this.removers);
 
-    return this.with(strat);
+//     return this.with(strat);
+//   }
+  
+// }
+
+//const playerDefaultMesh = () => new THREE.Mesh(new THREE.SphereGeometry(1), new THREE.MeshLambertMaterial())
+const playerDefaultMesh = () => new Model('sphere')
+
+class player {
+  constructor() {
+    this.model_ = playerDefaultMesh();
   }
+  pos() { return this.model().position; }
+  model() { return this.model_.obj; }
+  update() { }
   
   move(dir) {
-    this.model.move(movement.copy(dir).multiplyScalar(this.speed));
+    this.pos().add(movement.copy(dir).multiplyScalar(this.speed));
     //this.world.socket.emit('move', {x: this.model.obj.position.x, y: this.model.obj.position.y, z: this.model.obj.position.z});
   }
   
@@ -41,8 +53,8 @@ class Player extends Actor {
   hold() {
     if(editMode) {
       let brush = {
-        x: this.model.obj.position.x,
-        y: this.model.obj.position.z,
+        x: this.pos().x,
+        y: this.pos().z,
         r: 1.5,
       };
       this.world.getActiveLayer().paint(brush);
@@ -54,14 +66,5 @@ class Player extends Actor {
   }
 }
 
-const player = () => {
-  return {
-    model: new Model('sphere'),
-  };
-}
 
-player.pos = (player) => player.model.obj.position
-player.mesh = (player) => player.model.obj
-player.update = (player) => null
-
-export {Player, player};
+export {player};

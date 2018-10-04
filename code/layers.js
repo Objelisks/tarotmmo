@@ -72,7 +72,7 @@ export class Terrain extends Doing {
   }
 }
 
-export class Plants extends Doing{
+export class Plants extends Doing {
   constructor(proto, density) {
     super();
     

@@ -1,13 +1,10 @@
 import {THREE} from './libs.js';
-import {Actor} from './actor.js';
 import * as singletons from './singletons.js';
-import {Player, player} from './player.js';
+import {player} from './player.js';
 import {Local, Remote, Keyvent} from './input.js';
-import {Painter} from './painter.js';
 import * as layers from './layers.js';
-import {inlog, mod} from './util.js';
+import {mod} from './util.js';
 import {Layer} from './layer.js';
-import {Thing} from './thing.js';
 import {Plant} from './things/plant.js';
 import {flower, grass} from './things/plant_data.js';
 
@@ -16,48 +13,41 @@ let {network} = singletons;
 const width = 640;
 const height = 480;
 const aspectRatio = width/height;
+const cameraOffset = new THREE.Vector3(20,20,20);
 
-class World extends Thing {
+const placeholderLevel = {
+  name: 'placeholder',
+  layers: [],
+  objects: []
+};
+
+class World {
   constructor() {
-    super();
-
-    this.scene = new THREE.Scene();
-    //let camera = new THREE.OrthographicCamera(-25*aspectRatio, 25*aspectRatio, 25, -25, 0.1, 100);
     this.camera = new THREE.PerspectiveCamera(30, aspectRatio, 1, 1000);
+    this.camera.position.set(20, 20, 20);
+    this.camera.lookAt(new THREE.Vector3());
+    
+    this.players = {};
+    this.layers = [];
+    this.objects = [];
+    this.scene = new THREE.Scene();
+    
     this.input = new Local()
       .when('switchleft', Keyvent.onPress(() => this.rotateLayerSelection(true)))
       .when('switchright', Keyvent.onPress(() => this.rotateLayerSelection(false)))
       .when('save', Keyvent.onPress(() => this.load('test')));
-  
-    this.name = 'temp';
-    this.activeLayerIndex = 0;
-    this.players = {
-//      'local': new Player(this).input(this.input).join(this),
-      'local': player()
-    };
-    Object.keys(this.players).map(id => this.scene.add(player.mesh(this.players[id])));
     
-    this.layers = [];
-    
-    this.camera.position.x = 20;
-    this.camera.position.y = 20;
-    this.camera.position.z = 20;
-    this.camera.lookAt(new THREE.Vector3());
-
-    network.when('new player', (p) => {
-      // this.players[player.id] = new Player(this)
-      //   .input(new Remote(player.id))
-      //   .join(this);
-      this.players[p.id] = player();
+    this.load('test').then(() => {
+      network.when('new player', (p) => {
+        this.players[p.id] = new player();
+      });
+      network.when('player left', (p) => {
+        if(this.players[p.id]) {
+          this.scene.remove(this.players[p.id].model());
+          delete this.players[p.id];
+        }
+      });
     });
-    network.when('player left', (p) => {
-      if(this.players[p.id]) {
-        this.scene.remove(player.mesh(this.players[p.id]));
-        delete this.players[p.id];
-      }
-    });
-    
-    this.load('test');
   }
   
   getActiveLayer() {
@@ -70,14 +60,11 @@ class World extends Thing {
   
   update() {
     Object.keys(singletons).forEach(id => singletons[id].update(this));
-    //Object.keys(this.players).forEach(id => this.players[id].update(this));
-    Object.values(this.players).forEach(player.update);
+    Object.values(this.players).filter(player => player.update).forEach(player => player.update());
     this.layers.forEach(layer => layer.update(this));
     
     if(this.players.local) {
-      this.camera.position.x = this.players.local.model.obj.position.x+20;
-      this.camera.position.y = this.players.local.model.obj.position.y+20;
-      this.camera.position.z = this.players.local.model.obj.position.z+20;
+      this.camera.position.copy(this.players.local.pos()).add(cameraOffset);
     }
   }
 
@@ -87,25 +74,28 @@ class World extends Thing {
   }
   
   save() {
-    let name = window.prompt('name:::', 'test') || 'test';
+    const name = window.prompt('name:::', 'test') || 'test';
     console.log('saving', name);
     network.send('save', this.serialize(name));
   }
   
   load(name) {
-    network.send('load', name, (res, data) => {
-      if(res == 'ok') {
-        console.log('loading', name);
-        this.parseLoad(JSON.parse(data))
-          .then((newModel) => this.transitionTo(newModel));
-      } else {
-        console.log('load error', data);
-      }
+    return new Promise((resolve, reject) => {
+      network.send('load', name, (res, data) => {
+        if(res == 'ok') {
+          console.log('loading', name);
+          resolve(this.parseLoad(JSON.parse(data))
+            .then((newModel) => this.transitionTo(newModel)));
+        } else {
+          console.log('load error', data);
+          reject(data);
+        }
+      });
     });
   }
   
   parseLoad(data) {
-    let newScene = new THREE.Scene();
+    const newScene = new THREE.Scene();
     
     const direct = new THREE.DirectionalLight({color: 0xffffff});
     direct.position.set(0.1, 1, 0.5);
@@ -127,7 +117,7 @@ class World extends Thing {
   
   transitionTo(newModel) {
     //Object.keys(this.players).forEach(id => this.players[id].leave(this));
-    Object.entries(this.players).forEach(([id, p]) => this.scene.remove(player.mesh(p)))
+    Object.entries(this.players).forEach(([id, p]) => this.scene.remove(p.model()))
     this.players = {};
     
     this.name = newModel.name;
@@ -136,9 +126,9 @@ class World extends Thing {
     this.objects = newModel.objects;
     
     this.activeLayerIndex = 0;
-    this.players['local'] = new Player(this)
-      .input(this.input)
-      .join(this);
+    
+    this.players.local = new player();
+    Object.keys(this.players).map(id => this.scene.add(this.players[id].model()));
     
     network.send('hi im new');
   }
