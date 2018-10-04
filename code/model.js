@@ -1,5 +1,4 @@
 import {THREE} from './libs.js';
-import {Thing} from './thing.js';
 
 const vec = new THREE.Vector3();
 const loader = new THREE.JSONLoader();
@@ -13,31 +12,24 @@ const convertMaterialsToStandard = (mats) => {
   }));
 };
 
-class Model extends Thing {
+class Model {
   constructor(modelName) {
-    super();
     this.obj = new THREE.Object3D();
-    this.resolve('mesh', this.obj);
+    this.loaded = false;
 
     if(modelName == 'sphere') {
       const geo = new THREE.SphereGeometry(1);
       const mat = new THREE.MeshLambertMaterial({color: 0xC3E3AC});
       this.mesh = new THREE.Mesh(geo, mat);
       this.obj.add(this.mesh);
+      this.loaded = true;
     } else {
       loader.load(`./data/${modelName}`, (geo, mats) => {
         this.mesh = new THREE.Mesh(geo, convertMaterialsToStandard(mats));
         this.obj.add(this.mesh);
+        this.loaded = true;
       });
     }
-  }
-
-  move(vec) {
-    this.obj.position.add(vec);
-  }
-
-  rotate(quat) {
-    this.obj.applyQuaternion(quat);
   }
 }
 

@@ -2,7 +2,7 @@ import {keyboard} from './devices/keyboard.js';
 import {gamepad} from './devices/gamepad.js';
 
 const data = {};
-const methods = [keyboard, gamepad]; // .filter(supported?)
+const methods = [keyboard, gamepad].filter(method => method.supported);
 const keys = ['horizontal','vertical','action','save','switchleft','switchright'];
 
 const clamp = (x) => x > 1.0 ? 1.0 : x < -1.0 ? -1.0 : x;

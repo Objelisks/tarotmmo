@@ -37,4 +37,6 @@ gamepad.update = function() {
   };
 };
 
+gamepad.supported = true;
+
 export {gamepad};
