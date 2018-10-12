@@ -34,16 +34,17 @@ let movement = new THREE.Vector3();
 const playerDefaultMesh = () => new Model('sphere')
 
 class player {
-  constructor() {
-    this.model_ = playerDefaultMesh();
+  constructor(id) {
+    this.id = id;
+    this.mesh = playerDefaultMesh();
   }
   pos() { return this.model().position; }
-  model() { return this.model_.obj; }
+  rot() { return this.model().quaternion; }
+  model() { return this.mesh.obj; }
   update() { }
   
   move(dir) {
     this.pos().add(movement.copy(dir).multiplyScalar(this.speed));
-    //this.world.socket.emit('move', {x: this.model.obj.position.x, y: this.model.obj.position.y, z: this.model.obj.position.z});
   }
   
   action() {

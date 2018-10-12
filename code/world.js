@@ -31,6 +31,7 @@ class World {
     this.layers = [];
     this.objects = [];
     this.scene = new THREE.Scene();
+    this.i = 0;
     
     this.input = new Local()
       .when('switchleft', Keyvent.onPress(() => this.rotateLayerSelection(true)))
@@ -39,12 +40,12 @@ class World {
     
     this.load('test').then(() => {
       network.when('new player', (p) => {
-        this.players[p.id] = new player();
+        this.players[`${p.id}-avatar`] = new player(`${p.id}-avatar`);
       });
       network.when('player left', (p) => {
-        if(this.players[p.id]) {
-          this.scene.remove(this.players[p.id].model());
-          delete this.players[p.id];
+        if(this.players[`${p.id}-avatar`]) {
+          this.scene.remove(this.players[`${p.id}-avatar`].model());
+          delete this.players[`${p.id}-avatar`];
         }
       });
     });
@@ -59,18 +60,50 @@ class World {
   }
   
   update() {
-    Object.keys(singletons).forEach(id => singletons[id].update(this));
-    Object.values(this.players).filter(player => player.update).forEach(player => player.update());
+    singletons.devices.update(this);
+    const outsideState = network.state();
+    if(outsideState) {
+      Object.entries(outsideState.objects).forEach(([objectId, object]) => {
+        const obj = this.players[`${objectId}`];
+        if(obj) {
+          obj.pos().set(...object.pos);
+          obj.rot().set(...object.rot);
+        }
+      });
+    }
+    if(this.i == 100) {
+      console.log({outsideState, players: this.players});
+    }
+    Object.values(this.players)
+      .filter(player => player.update)
+      .forEach(player => player.update());
     this.layers.forEach(layer => layer.update(this));
     
     if(this.players.local) {
       this.camera.position.copy(this.players.local.pos()).add(cameraOffset);
+    }
+    
+    network.send('state', this.networkState());
+    if(this.i++ == 100) {
+      this.i = 0;
+      //console.log({thisState: this.networkState()});
     }
   }
 
   render(renderer) {
     this.update();
     renderer.render(this.scene, this.camera);
+  }
+  
+  networkState() {
+    return {
+      id: network.id(),
+      objects: Object.entries(this.players).reduce((pre, [id, cur]) => ({
+        ...pre,
+        [id]: {id, pos: cur.pos().toArray(), rot: cur.rot().toArray()},
+      }), {}),
+      events: { }
+    }
   }
   
   save() {
@@ -116,7 +149,6 @@ class World {
   }
   
   transitionTo(newModel) {
-    //Object.keys(this.players).forEach(id => this.players[id].leave(this));
     Object.entries(this.players).forEach(([id, p]) => this.scene.remove(p.model()))
     this.players = {};
     
@@ -127,8 +159,10 @@ class World {
     
     this.activeLayerIndex = 0;
     
-    this.players.local = new player();
-    Object.keys(this.players).map(id => this.scene.add(this.players[id].model()));
+    network.connected().then(() => {
+      this.players[`${network.id()}-avatar`] = new player(`${network.id()}-avatar`);
+      Object.keys(this.players).map(id => this.scene.add(this.players[id].model()));
+    });
     
     network.send('hi im new');
   }

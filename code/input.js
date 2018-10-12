@@ -31,7 +31,7 @@ class Input extends Thing {
   delta() { return {}; }
   
   handle(delta, event) {
-    if(delta[event]) { 
+    if(delta[event]) {
       if(this.held[event]) {
         this.emit(event, Keyvent.HELD);
       } else {

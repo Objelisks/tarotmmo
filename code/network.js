@@ -1,28 +1,27 @@
 /* globals io */
 import {Thing} from './thing.js';
-
-class DeltaTracker {
-  constructor(id) {
-    this.id = id;
-    this.delta_ = {horizontal: 0, vertical: 0};
-  }
-  
-  delta() {
-    return this.delta_;
-  }
-}
+import * as state from './state.js';
 
 class Network extends Thing {
   constructor() {
     super();
     
-    this.actors = {};
-    this.local = {};
+    this.packets = {};
+    
+    this._connectedResolver = null;
+    this._connected = new Promise((resolve) => this._connectedResolver = resolve);
+    
     this.socket = io();
     this.socket.on('connect', (connection) => {
       console.log('connected');
       console.log('i am:', this.socket.id);
+      this._connectedResolver(this.socket.id);
     });
+    this.socket.on('state', (packet) => {
+      // store a history of packets received from each peer
+      this.packets[packet.id] = [packet];//, ...(this.packets[packet.id] || [])];
+    });
+    
     this.socket.on('hi im new', (player) => {
       this.playerJoin(player);
       this.socket.emit('hi new im', this.socket.id);
@@ -32,20 +31,20 @@ class Network extends Thing {
     });
     this.socket.on('im leaving', (player) => {
       console.log('a player is leaving', player.id);
-      delete this.actors[player.id];
       this.emit('player left', player);
-    });
-    this.socket.on('i moved', (move) => {
-      // find corresponding actor
-      // queue up movement delta
-      if(this.actors[move.id]) {
-        this.actors[move.id].delta_ = move;
-      }
     });
   }
   
-  get(id) {
-    return this.actors[id];
+  connected() {
+    return this._connected;
+  }
+  
+  id() {
+    return this.socket.id || 'MISSING_NETWORK_ID';
+  }
+  
+  state() {
+    return Object.keys(this.packets).length == 0 ? null : state.combinePackets(this.packets);
   }
   
   send(...args) {
@@ -54,8 +53,7 @@ class Network extends Thing {
   
   playerJoin(player, isResponse) {
     console.log('a new player is visible:', player.id);
-    if(!this.actors[player.id] && player.id != this.socket.id) {
-      this.actors[player.id] = new DeltaTracker(player.id);
+    if(player.id != this.socket.id) {
       this.emit('new player', player);
     }
   }
