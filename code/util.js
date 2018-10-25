@@ -12,6 +12,13 @@ import {quadtree} from './libs.js';
 }
 */
 
+let outputJson = {};
+const outputDiv = document.getElementById("console");
+export const out = (diff) => {
+  outputJson = {...outputJson, ...diff}
+  outputDiv.innerHTML = JSON.stringify(outputJson, undefined, '&nbsp;');
+}
+
 const findMinMax = (arr) => arr
   .reduce((p, c) => [Math.min(p[0], c), Math.max(p[1], c)], [0, 0]);
 
@@ -25,6 +32,7 @@ export const inlog = (...args) => {
 
 // stole from polybool code
 export const pointInsideRegion = (pt, region) => {
+  if(region.length == 0) return false;
   var x = pt[0];
   var y = pt[1];
   var last_x = region[region.length - 1][0];

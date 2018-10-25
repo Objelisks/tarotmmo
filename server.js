@@ -20,7 +20,7 @@ const ifok = (err, data, fn) => err ? fn('error', err) : fn('ok', data);
 const events = [
   'hi im new',
   'hi new im',
-  'i moved',
+  'state',
 ];
 
 io.on('connection', (socket) => {

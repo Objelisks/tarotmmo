@@ -1,3 +1,8 @@
+do i need to sync terrain?
+  potential terrain modifying abilities
+  need to do some game design i guess
+
+
 refactors
 get rid of inheritance
 Things
@@ -6,7 +11,46 @@ Things
 
 
 
+singletons:
+asynchronous actions
 
+if it was single player:
+  queue up events and reduce per frame
+
+in a universe where time is meaningless:
+  queue up events
+  
+what is truth?
+  majority of players agree on a fact? -> ritual to change facts???
+    need other players to remind owner where they actually are
+      need algorithm for taking in multiple inputs and not letting any one control too much
+
+milestone one:
+  accept all states from all players
+
+milestone two:
+  moving window of volatile state, which becomes more solidified the further back you go
+  uncertainty applied to number of updates yet to be seen for a moment in time
+  
+others -> network -> state -> update -> state -> network -> others
+
+update loop:
+  async network events -> cache queue
+  apply network updates
+  update state
+  send network updates
+
+network event looks like:
+{
+  objects: {
+    id: {latest_pos, latest_rot} // lerp to this, only update objects you know about, keep track of history of applied updates
+  },
+  events: [
+    {nonce, when, where, what, params} // if new, init and lerp, otherwise keep playing, might create objects[id]
+  ]
+}
+
+local object isn't affected by updates, since they will always be off (behind), unless very off
 
 
 

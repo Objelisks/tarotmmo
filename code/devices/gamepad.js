@@ -6,7 +6,7 @@ const A_BUTTON = 0;
 const B_BUTTON = 1;
 
 let playerOne = null;
-const deadzone = (input) => input > 0.2 ? input : input < -0.2 ? input : 0.0;
+const deadz0ne = (input) => input > 0.2 ? input : input < -0.2 ? input : 0.0;
 
 window.addEventListener('gamepadconnected', (e) => {
   const gamepad = navigator.getGamepads()[e.gamepad.index];
@@ -30,8 +30,8 @@ gamepad.update = function() {
   }
 
   return {
-    'horizontal': -deadzone(gamepad.axes[HORIZONTAL_AXIS]),
-    'vertical': -deadzone(gamepad.axes[VERTICAL_AXIS]),
+    'horizontal': -deadz0ne(gamepad.axes[HORIZONTAL_AXIS]),
+    'vertical': -deadz0ne(gamepad.axes[VERTICAL_AXIS]),
     'action': gamepad.buttons[A_BUTTON].value,
     'save': gamepad.buttons[B_BUTTON].value,
   };

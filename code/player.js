@@ -1,6 +1,10 @@
 import {THREE} from './libs.js';
-import {Keyvent} from './input.js';
 import {Model} from './model.js';
+
+const CAMERA_FORWARD = new THREE.Vector3(-0.7071, 0, -0.7071);
+const UP = new THREE.Vector3(0,1,0);
+const NORTH = new THREE.Vector3(0,0,1);
+const CAMERA_ROTATION = new THREE.Quaternion().setFromUnitVectors(NORTH, CAMERA_FORWARD);
 
 let editMode = true;
 let movement = new THREE.Vector3();
@@ -34,35 +38,20 @@ let movement = new THREE.Vector3();
 const playerDefaultMesh = () => new Model('sphere')
 
 class player {
-  constructor() {
-    this.model_ = playerDefaultMesh();
+  constructor(id) {
+    this.id = id;
+    this.mesh = playerDefaultMesh();
+    this.speed = 0.2
   }
   pos() { return this.model().position; }
-  model() { return this.model_.obj; }
-  update() { }
+  rot() { return this.model().quaternion; }
+  model() { return this.mesh.obj; }
   
-  move(dir) {
-    this.pos().add(movement.copy(dir).multiplyScalar(this.speed));
-    //this.world.socket.emit('move', {x: this.model.obj.position.x, y: this.model.obj.position.y, z: this.model.obj.position.z});
-  }
-  
-  action() {
-    
-  }
-  
-  hold() {
-    if(editMode) {
-      let brush = {
-        x: this.pos().x,
-        y: this.pos().z,
-        r: 1.5,
-      };
-      this.world.getActiveLayer().paint(brush);
-    }
-  }
-  
-  release() {
-    this.world.getActiveLayer().finish();
+  applyDelta(context, delta) {
+    const move = new THREE.Vector3(delta.held.horizontal, 0, delta.held.vertical);
+    move.applyQuaternion(CAMERA_ROTATION);
+    move.multiplyScalar(this.speed);
+    this.pos().add(move);
   }
 }
 

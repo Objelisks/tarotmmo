@@ -8,6 +8,10 @@ import {blueNoisePolygonGen, areaInsideRegion} from './util.js';
 const terrainMat = new THREE.MeshLambertMaterial({color:0x009900});
 
 class Doing {
+  constructor(type) {
+    this.type = type;
+    this.obj = new THREE.Object3D();
+  }
   paint() {}
   finish(layer) {}
   show(scene) {
@@ -18,35 +22,40 @@ class Doing {
 }
 
 export class Exit extends Doing {
-  constructor() {
-    super();
-    
+  constructor(zoneName) {
+    super('Exit');
+    this.targetZone = zoneName || prompt('zone name??');
   }
   
   update(context, layer) {
-    //collide context.players
+    layer.collision(context, this);
   }
   
-  collide(actor) {
-    if(actor.isLocalPlayer) {
-      
+  enter(context, player) {
+    if(context.vars.mode == 'play' && player === context.local) {
+      context.world.load(this.targetZone);
     }
+  }
+  
+  exit(context, player) {
+    
+  }
+  
+  serialize() {
+    return { type: this.type, args: [this.targetZone] };
   }
 }
 
 export class Terrain extends Doing {
   constructor() {
-    super();
+    super('Terrain');
     
-    this.obj = new THREE.Object3D();
     this.ground = new THREE.PlaneGeometry(1,1,1);
     this.ground.rotateX(-Math.PI/2);
     this.groundMesh = new THREE.Mesh(this.ground, terrainMat);
     
     this.obj.add(this.groundMesh);
     this.obj.position.y = -1.5;
-    
-    this.type = 'Terrain';
   }
   
   finish(layer) {
@@ -59,12 +68,14 @@ export class Terrain extends Doing {
         bevelSegments: 2,
       });
     });
-    let geo = geos.reduce((p, c) => { p.merge(c); return p; }, geos[0]);
-    geo.rotateX(Math.PI/2);
-    let newMesh = new THREE.Mesh(geo, terrainMat);
-    this.obj.remove(this.groundMesh);
-    this.groundMesh = newMesh;
-    this.obj.add(this.groundMesh);
+    if(geos.length > 0) {
+      let geo = geos.reduce((p, c) => { p.merge(c); return p; }, geos[0]);
+      geo.rotateX(Math.PI/2);
+      let newMesh = new THREE.Mesh(geo, terrainMat);
+      this.obj.remove(this.groundMesh);
+      this.groundMesh = newMesh;
+      this.obj.add(this.groundMesh);
+    }
   }
   
   serialize() {
@@ -74,14 +85,10 @@ export class Terrain extends Doing {
 
 export class Plants extends Doing {
   constructor(proto, density) {
-    super();
+    super('Plants');
     
-    this.obj = new THREE.Object3D();
-    
-    this.proto = protos[proto];
+    this.proto = proto;
     this.density = density;
-    this.type = 'Plants';
-    this.args = [proto, density];
   }
   
   finish(layer) {
@@ -90,7 +97,7 @@ export class Plants extends Doing {
       let gen = blueNoisePolygonGen(region, 1.0 / this.density);
       let pts = new Array(Math.floor(areaInsideRegion(region)*this.density)).fill(0).map(_ => gen());
       pts.forEach(([x, y]) => {
-        const plant = new Plant(this.proto);
+        const plant = new Plant(protos[this.proto]);
         plant.obj.position.set(x, 0, y);
         plant.obj.rotateY(Math.random()*Math.PI*2);
         this.obj.add(plant.obj);
@@ -99,6 +106,6 @@ export class Plants extends Doing {
   }
   
   serialize() {
-    return { type: this.type, args: this.args };
+    return { type: this.type, args: [this.proto, this.density] };
   }
 }
