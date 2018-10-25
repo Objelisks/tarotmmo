@@ -14,7 +14,8 @@ const renderer = new THREE.WebGLRenderer({
   antialias: true,
 });
 renderer.setSize(width, height);
-document.body.appendChild(renderer.domElement);
+document.getElementById('game')
+  .appendChild(renderer.domElement);
 
 const play = () => {
   requestAnimationFrame(play);

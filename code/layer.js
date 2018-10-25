@@ -1,4 +1,5 @@
 import {THREE, PolyBool, simplify} from './libs.js';
+import {pointInsideRegion} from './util.js';
 
 /*
 // polygon format (PolyBool)
@@ -21,6 +22,7 @@ class Layer {
     this.refreshDebug();
     this.display.rotateX(Math.PI/2);
     this.doings = [];
+    this.within = new Set();
   }
 
   does(strat) {
@@ -29,7 +31,26 @@ class Layer {
   }
   
   update(context) {
-    this.doings.forEach((doing) => doing.update ? doing.update(context, this.gon) : null);
+    this.doings.forEach((doing) => doing.update ? doing.update(context, this) : null);
+  }
+ 
+  collision(context, doing) {
+    const hitTest = Object.values(context.players)
+      .map(player => ({
+        player,
+        inside: this.gon.regions.filter(region =>
+          pointInsideRegion([player.pos().x, player.pos().z], region)).length > 0
+      }));
+    hitTest.filter(hit => hit.inside && !this.within.has(hit.player.id))
+      .forEach(hit => {
+        this.within.add(hit.player.id);
+        doing.enter(context, hit.player);
+      });
+    hitTest.filter(hit => !hit.inside && this.within.has(hit.player.id))
+      .forEach(hit => {
+        this.within.delete(hit.player.id);
+        doing.exit(context, hit.player);
+      });
   }
 
   paint(brush) {
@@ -39,7 +60,11 @@ class Layer {
       ],
       inverted: false,
     };
-    this.gon = PolyBool.union(this.gon, brushgon);
+    if(brush.erase) {
+      this.gon = PolyBool.difference(this.gon, brushgon);
+    } else {
+      this.gon = PolyBool.union(this.gon, brushgon);
+    }
     this.simplifySelf();
     this.doings.forEach((doing) => doing.paint ? doing.paint(this.gon) : null);
     this.refreshDebug();
@@ -54,7 +79,8 @@ class Layer {
       regions: this.gon.regions.map(region => dxy(simplify(xy(region), 0.25))),
       inverted: this.gon.inverted,
     };
-  }  
+  }
+  
   refreshDebug() {
     // todo: probably less wasteful way of doing this
     let newGeo = new THREE.ShapeBufferGeometry(toShapes(this.gon), 1);
@@ -66,6 +92,14 @@ class Layer {
     this.finish();
     scene.add(this.display);
     return this;
+  }
+  
+  highlight() {
+    this.display.visible = true
+  }
+  
+  unhighlight() {
+    this.display.visible = false
   }
   
   serialize() {

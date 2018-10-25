@@ -54,16 +54,7 @@ const cleanEvents = (events) => Object.values(events)
   .filter(event => isNotVeryOld(event))
   .reduce((pre, event) => ({...pre, [event.id]: event}), {})
 
-console.log({
-  now: Date.now(),
-  1: cleanEvents({}),
-  2: cleanEvents({1: {id: 1, start: Date.now(), dur: 1}}),
-  3: cleanEvents({1: {id: 1, start: Date.now(), dur: 1}, 2: {id: 2, start: Date.now()+20, dur: 1}}),
-});
-
-
 export const combineState = (stateA, stateB) => {
-  console.log('combine', stateA, stateB);
   return (stateA && !stateB) ? stateA :
     (!stateA && stateB) ? stateB :
     ({
